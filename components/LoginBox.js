@@ -1,4 +1,4 @@
-import { Image, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Image, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View  } from 'react-native'
 import React, { useState } from 'react'
 
 export default function LoginBox() {
@@ -33,9 +33,12 @@ export default function LoginBox() {
                 placeholder='Password' 
                 secureTextEntry={true}
             />
-            <TouchableOpacity style={styles.loginButton}>
+            <Pressable 
+                style={styles.loginButton}
+                android_ripple={{color:"#000"}}
+            >
                 <Text style={styles.buttonText}>Login</Text>
-            </TouchableOpacity>
+            </Pressable>
         </View>
     </View>
   )
