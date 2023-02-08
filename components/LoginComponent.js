@@ -1,13 +1,17 @@
-import { StatusBar, StyleSheet, Text, View } from 'react-native'
+import { Keyboard, KeyboardAvoidingView, Platform, StyleSheet,  TouchableWithoutFeedback } from 'react-native'
 import React from 'react'
 import LoginBox from './LoginBox';
 
 export default function LoginComponent() {
   return (
-    <View style={styles.container}>
-        <LoginBox/>
-      <StatusBar styles="auto"/>
-    </View>
+    <KeyboardAvoidingView 
+        behavior={ Platform.OS === 'ios' ? 'padding' : 'height' }
+        style={styles.container}
+    >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <LoginBox/>
+        </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   )
 }
 
@@ -15,5 +19,6 @@ const styles = StyleSheet.create({
     container:{
         flex:1,
         backgroundColor:"#00000010",
+        //alignItems:'center',
     },
 });

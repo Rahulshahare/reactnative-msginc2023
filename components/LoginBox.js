@@ -1,10 +1,13 @@
-import { Image, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View  } from 'react-native'
+import { Image, Platform, Pressable, StyleSheet, Text, TextInput, View  } from 'react-native'
 import React, { useState } from 'react'
 
 export default function LoginBox() {
 
     const [isEmailFocus, SetIsEmailFocus] = useState(false);
     const [isPasswordFocus, SetIsPasswordFocus] = useState(false);
+    const [email, SetEmail] = useState('');
+    const [password, SetPassword] = useState('');
+    const [error, SetError] = useState();
 
     const handleEmailFocus = () => SetIsEmailFocus(true);
 
@@ -15,27 +18,105 @@ export default function LoginBox() {
         SetIsPasswordFocus(false);
     }
 
+    const handlePress = () => {
+        SetError();
+        if(email && password){
+            /**Checking for valid email format */
+            let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+            if (reg.test(email) === false) {
+                console.log("Email is Not Correct");
+                SetError("Invalid email");
+                return false;
+            }else{
+                /**Send login details to server */
+                handleLogin();
+            }
+            //alert(email+' '+password);
+        }else{
+            SetError("Empty inputs");
+        }
+    }
+
+    function handleLogin (){
+        const Buffer = require("buffer").Buffer;
+        let encodedEmail = new Buffer(email).toString("base64");
+        let encodedPassword = new Buffer(password).toString("base64");
+        //const token = [encodedEmail,encodedPassword];
+        const data = [];
+        data.push(encodedEmail);
+        data.push(encodedPassword);
+        //console.log(data);
+        //console.log(JSON.stringify(data));
+
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", "https://msginc.ml/api/auth?utm_source=origin&utm_medium=ReactNativeAppAndroid");
+        xhr.setRequestHeader("Accept", "application/json");
+        xhr.setRequestHeader("Content-Type", "application/json");
+
+        xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+            console.log(xhr.status);
+            console.log(xhr.responseText);
+        }};
+        let token = data;
+          
+
+        //xhr.send(token);
+
+        const token2 = [email,password];
+        const params = {
+            email: email,
+            password: password,
+        }
+        console.log(params);  
+
+        const http = new XMLHttpRequest()
+        http.open('POST', 'http://msginc.ml/rn.php')
+        //http.setRequestHeader("Accept", "application/json")
+        //http.setRequestHeader('Content-type', 'application/json')
+        http.send(token2) // Make sure to stringify
+        http.onload = function() {
+            // Do whatever with response
+            alert(http.responseText)
+        }
+        
+    }
+
+
     const ImageSource = require("../assets/oceangreenLogo.jpeg")
   return (
     <View style={styles.loginBox}>
         <Image source={ImageSource} style={styles.logo} />
         <View style={styles.inputBox}>
+            { /**Showing Errors if any */
+                error != null
+                ?   <View style={styles.errorBox}>
+                        <Text style={styles.errorText}>{error}</Text>
+                    </View>
+                : null
+            }
+            
+
             <TextInput 
                 style={[styles.input,{borderColor: isEmailFocus?"#80bdff":"#ced4da"}]} 
                 onFocus={handleEmailFocus}
                 onBlur={handleInputBlur}
                 placeholder='Email'
+                onChangeText={SetEmail}
             />
+            
             <TextInput 
                 style={[styles.input,{borderColor: isPasswordFocus?"#80bdff":"#ced4da"}]} 
                 onFocus={handlePasswordFocus}
                 onBlur={handleInputBlur}
                 placeholder='Password' 
+                onChangeText={SetPassword}
                 secureTextEntry={true}
             />
             <Pressable 
                 style={styles.loginButton}
                 android_ripple={{color:"#000"}}
+                onPress={handlePress}
             >
                 <Text style={styles.buttonText}>Login</Text>
             </Pressable>
@@ -46,6 +127,7 @@ export default function LoginBox() {
 
 const styles = StyleSheet.create({
     loginBox:{
+        //minWidth: Platform.OS == 'web' ? 300 : '90%' ,
         backgroundColor:"#fff",
         padding:15,
         paddingBottom:50,
@@ -82,9 +164,9 @@ const styles = StyleSheet.create({
         padding:10,
         marginBottom:20,
         borderRadius:5,
-        borderColor:"#09f",
         fontSize:16,
         color:"#09f",
+        
     },
     loginButton:{
         borderColor:"#007BFF",
@@ -96,5 +178,20 @@ const styles = StyleSheet.create({
     buttonText:{
         color:"#fff", 
         fontSize:20,
+    },
+    errorBox:{
+        backgroundColor:'#ff000050',
+        marginBottom:20,
+        padding:10,
+        borderWidth:1,
+        borderColor:'red',
+        borderRadius:5,
+        
+    },
+    errorText:{
+        color:'red',
+        fontSize:14,
+        fontWeight:'500',
+        textAlign:"center"
     },
 });
