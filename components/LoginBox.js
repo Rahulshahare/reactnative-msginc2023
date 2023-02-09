@@ -1,5 +1,6 @@
-import { Image, Platform, Pressable, StyleSheet, Text, TextInput, View  } from 'react-native'
+import { Image, Platform, Pressable, StyleSheet, Text, TextInput, View ,StatusBar } from 'react-native'
 import React, { useState } from 'react'
+import { ActivityIndicator } from 'react-native-web';
 
 export default function LoginBox() {
 
@@ -8,6 +9,7 @@ export default function LoginBox() {
     const [email, SetEmail] = useState('');
     const [password, SetPassword] = useState('');
     const [error, SetError] = useState();
+    const [disabledPressable, SetDisabledPressable] = useState(false);
 
     const handleEmailFocus = () => SetIsEmailFocus(true);
 
@@ -19,73 +21,72 @@ export default function LoginBox() {
     }
 
     const handlePress = () => {
+        SetDisabledPressable(true);
         SetError();
         if(email && password){
             /**Checking for valid email format */
             let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
             if (reg.test(email) === false) {
-                console.log("Email is Not Correct");
+                //console.log("Email is Not Correct");
                 SetError("Invalid email");
+                SetDisabledPressable(false);
                 return false;
             }else{
                 /**Send login details to server */
-                handleLogin();
+                setTimeout(function() {
+                    handleLogin();
+                   }, 2000);
+                   //SetDisabledPressable(false);
+                
             }
             //alert(email+' '+password);
         }else{
             SetError("Empty inputs");
+            SetDisabledPressable(false);
         }
+
+        
     }
 
     function handleLogin (){
         const Buffer = require("buffer").Buffer;
         let encodedEmail = new Buffer(email).toString("base64");
         let encodedPassword = new Buffer(password).toString("base64");
-        //const token = [encodedEmail,encodedPassword];
-        const data = [];
-        data.push(encodedEmail);
-        data.push(encodedPassword);
-        //console.log(data);
-        //console.log(JSON.stringify(data));
+              
 
-        let xhr = new XMLHttpRequest();
-        xhr.open("POST", "https://msginc.ml/api/auth?utm_source=origin&utm_medium=ReactNativeAppAndroid");
-        xhr.setRequestHeader("Accept", "application/json");
-        xhr.setRequestHeader("Content-Type", "application/json");
+        var data = new FormData();
+            data.append('identity', 'ReactNativeApp');
+            data.append('email',  encodedEmail);
+            data.append('password', encodedPassword);
 
-        xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4) {
-            console.log(xhr.status);
-            console.log(xhr.responseText);
-        }};
-        let token = data;
-          
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'https://msginc.ml/api/auth?utm_source=reactNativeApp', true);
+            xhr.onload = function () {
+                // do something to response
+                // console.log(this.responseText);
+                if(this.responseText != ''){
+                    console.log(this.responseText);
+                    var returnObject = JSON.parse(this.responseText);
+                    //console.log(returnObject.identification);
 
-        //xhr.send(token);
-
-        const token2 = [email,password];
-        const params = {
-            email: email,
-            password: password,
-        }
-        console.log(params);  
-
-        const http = new XMLHttpRequest()
-        http.open('POST', 'http://msginc.ml/rn.php')
-        //http.setRequestHeader("Accept", "application/json")
-        //http.setRequestHeader('Content-type', 'application/json')
-        http.send(token2) // Make sure to stringify
-        http.onload = function() {
-            // Do whatever with response
-            alert(http.responseText)
-        }
+                        if(returnObject.loggedIn == 'YES'){
+                            SetError(returnObject.userDetails.username)
+                        }else{
+                            SetError(returnObject.error)
+                        }
+                }
+            };
+            xhr.send(data);
         
+
+            SetDisabledPressable(false);
     }
 
 
     const ImageSource = require("../assets/oceangreenLogo.jpeg")
   return (
     <View style={styles.loginBox}>
+        <StatusBar barStyle="light-content" backgroundColor="#343a40" />
         <Image source={ImageSource} style={styles.logo} />
         <View style={styles.inputBox}>
             { /**Showing Errors if any */
@@ -93,7 +94,7 @@ export default function LoginBox() {
                 ?   <View style={styles.errorBox}>
                         <Text style={styles.errorText}>{error}</Text>
                     </View>
-                : null
+                :   null
             }
             
 
@@ -114,11 +115,13 @@ export default function LoginBox() {
                 secureTextEntry={true}
             />
             <Pressable 
-                style={styles.loginButton}
+                style={[styles.loginButton, { backgroundColor: disabledPressable ? "#077bffc4" : "#077BFF"}]}
                 android_ripple={{color:"#000"}}
                 onPress={handlePress}
-            >
-                <Text style={styles.buttonText}>Login</Text>
+                disabled={disabledPressable}
+            >  
+                <Text style={styles.buttonText}>{!disabledPressable ? 'Login' : 'Please wait...'}</Text>
+                
             </Pressable>
         </View>
     </View>
@@ -178,6 +181,7 @@ const styles = StyleSheet.create({
     buttonText:{
         color:"#fff", 
         fontSize:20,
+        fontWeight:'700',
     },
     errorBox:{
         backgroundColor:'#ff000050',
