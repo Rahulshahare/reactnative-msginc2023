@@ -1,4 +1,4 @@
-import { ActivityIndicator, Image, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { MsgStore } from '../store/Store';
 import { useStoreState } from 'pullstate';
@@ -8,6 +8,7 @@ export default function FriendListComponent() {
     const MsgStoreState = useStoreState(MsgStore);
     //const img = MsgStoreState.userDetails.img;
     const [imgSource, SetImgSource] = useState('');
+    const [friendData, SetFriendData] = useState('');
 
     const loadImageFromUrl = (imageToGet) =>{
             var xhr = new XMLHttpRequest();
@@ -19,36 +20,42 @@ export default function FriendListComponent() {
             };
             xhr.send();
     }
-    function GetFrindList(){
-        //console.log(MsgStoreState.userDetails.img);
-        //console.log(imgSource);
-        if(MsgStoreState.userDetails.img != undefined){
-            loadImageFromUrl(MsgStoreState.userDetails.img);
-        }
-        
-    }
+    
+
+    const UserList = () => {
+        return (
+          <ScrollView>
+            {friendData.map(item => (
+            <Pressable android_ripple={{color:"#343a40"}}>
+              <View key={item.id} style={styles.friendList}>
+              <View style={styles.friendPic}>
+                  <FriendPic url={item.img} />
+              </View>
+              <View style={styles.friendName}>
+                <Text style={styles.friendNameTitle}>{item.username}</Text>
+                <Text style={styles.friendLastLogin}>{item.last_login_dt}</Text>
+            </View>
+          </View>
+          </Pressable>
+            ))}
+          </ScrollView>
+        );
+      };
+
+    
+
 
     useEffect(() => {
-        GetFrindList();
-        console.log(MsgStoreState.userDetails.img);
-        // if(MsgStoreState.friendList[0].img == 'wizkumar.png'){
-        //     console.log('lets replace');
-        // }
-        //MsgStore.update(s =>{s.userDetails.img = 'lab.jpg'});
+        SetFriendData(MsgStoreState.friendList);
       });
 
   return (
     <View style={styles.friendListBox}>
         <Text style={styles.title}>FRIENDS</Text>
-        <ScrollView>
-            <View style={styles.friendList}>
-                <View style={styles.friendPic}>
-                    <FriendPic url={MsgStoreState.userDetails.img} />
-                </View>
-                <View style={styles.friendName}><Text>Name</Text><Text>Last</Text></View>
-            </View>
-            
-        </ScrollView>
+              
+            <>
+            { friendData == '' ? <ActivityIndicator/>   : UserList()}   
+            </>  
     </View>
   )
 }
@@ -70,7 +77,8 @@ const styles = StyleSheet.create({
     },
     friendList:{
         flexDirection:'row',
-        padding:20,
+        alignItems:'center',
+        padding:15,
         borderBottomWidth:1,
         borderBottomColor:'#343a406b',
     },
@@ -84,8 +92,14 @@ const styles = StyleSheet.create({
     },
     friendName:{
         flex:1,
-        borderColor:"#fff",
-        borderWidth:1,
+        //borderColor:"#fff",
+        //borderWidth:1,
         padding:10,
+    },
+    friendNameTitle:{
+        fontSize:18,
+        fontWeight:'500',
+        textTransform:'capitalize',
+        marginBottom:5,
     },
 });
