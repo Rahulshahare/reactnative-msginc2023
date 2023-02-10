@@ -1,24 +1,25 @@
 import { Button, StatusBar, StyleSheet, Text, View } from 'react-native';
 import { MsgStore } from '../store/Store';
 import { useStoreState } from 'pullstate';
+import FriendListComponent from './FriendListComponent';
 
 
 
 export default function HomeComponent() {
   
   const MsgStoreState = useStoreState(MsgStore);
-  const handleLogut = () =>{
-    MsgStore.update(s =>{ s.isLoggedIn = false});
-  }
   function PrintDE(){
     console.log(MsgStoreState.userDetails.username);
   }
     return (
       <View style={styles.container}>
-        <Text>{MsgStoreState.userDetails.username}</Text>
-        <StatusBar style="auto"/>
-        <Button title='Logout' onPress={handleLogut}/>
-        <Button title='print' onPress={ PrintDE }/>
+        <StatusBar barStyle="light-content" backgroundColor="#343a40" />
+        <View style={styles.greetingBox}>
+            <Text style={styles.greetingText}>
+              Hi, <Text style={styles.greetingName}>{MsgStoreState.userDetails.username}</Text>
+            </Text>
+        </View>
+        <FriendListComponent/>
       </View>
     )
     
@@ -26,12 +27,21 @@ export default function HomeComponent() {
 };
 
 
-
-
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#09f',
+  },
+  greetingBox:{
+    padding:20,
+    //backgroundColor:'#09ffff',
+  },
+  greetingText:{
+    color:'#343a40',
+    fontSize:24,
+  },
+  greetingName:{
+    fontWeight:'bold',
+    textDecorationLine:'underline',
+    textTransform:'capitalize',
   },
 });

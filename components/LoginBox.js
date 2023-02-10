@@ -79,8 +79,6 @@ export default function LoginBox() {
                             //Update Store login status
                             MsgStore.update(s => {s.isLoggedIn = true});
                             assignUserDetails(returnObject.userDetails);
-                            //MsgStore.update(s =>{s.userDetails = returnObject.userDetails})
-                            //const uD = MsgStore.useState(s => s.userDetails);
                             console.log(returnObject.userDetails);
                         }else{
                             SetError(returnObject.error)
