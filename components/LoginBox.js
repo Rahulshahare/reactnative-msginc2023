@@ -69,7 +69,7 @@ export default function LoginBox() {
             xhr.open('POST', 'https://msginc.ml/api/auth?utm_source=reactNativeApp', true);
             xhr.onload = function () {
                 // do something to response
-                 console.log(this.responseText);
+                 //console.log(this.responseText);
                 if(this.responseText != ''){
                     //console.log(this.responseText);
                     var returnObject = JSON.parse(this.responseText);

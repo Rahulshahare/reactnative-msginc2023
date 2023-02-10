@@ -16,6 +16,7 @@ export default function App() {
   const handleLogout = () =>{
     MsgStore.update(s => {s.isLoggedIn = false})
     MsgStore.update(s => {s.userDetails = ''});
+    MsgStore.update(s => {s.friendList = ''});
   }
     return (
       <NavigationContainer>

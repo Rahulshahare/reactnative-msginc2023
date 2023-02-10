@@ -20,7 +20,7 @@ export const GetFriendList = (myId) =>{
                  if(returnObject.identification == 'ReactNativeApp' && returnObject.friendList != 'NODATA'){
                     //assign the list 
                     UpdateFriendList(returnObject.friendList);
-                    console.log(returnObject.friendList);
+                    //console.log(returnObject.friendList);
                  }
             };
             xhr.send(data);
