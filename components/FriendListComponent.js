@@ -2,6 +2,7 @@ import { ActivityIndicator, Image, ScrollView, StyleSheet, Text, View } from 're
 import React, { useEffect, useState } from 'react'
 import { MsgStore } from '../store/Store';
 import { useStoreState } from 'pullstate';
+import FriendPic from './FriendPic';
 
 export default function FriendListComponent() {
     const MsgStoreState = useStoreState(MsgStore);
@@ -22,13 +23,18 @@ export default function FriendListComponent() {
         //console.log(MsgStoreState.userDetails.img);
         //console.log(imgSource);
         if(MsgStoreState.userDetails.img != undefined){
-            loadImageFromUrl(MsgStoreState.userDetails.img); 
+            loadImageFromUrl(MsgStoreState.userDetails.img);
         }
         
     }
 
     useEffect(() => {
         GetFrindList();
+        console.log(MsgStoreState.userDetails.img);
+        // if(MsgStoreState.friendList[0].img == 'wizkumar.png'){
+        //     console.log('lets replace');
+        // }
+        //MsgStore.update(s =>{s.userDetails.img = 'lab.jpg'});
       });
 
   return (
@@ -37,13 +43,7 @@ export default function FriendListComponent() {
         <ScrollView>
             <View style={styles.friendList}>
                 <View style={styles.friendPic}>
-                    {
-                        imgSource == '' ? <ActivityIndicator style={{width:70, height:70}}/> :
-                    
-                        <Image source={{uri: imgSource}}
-                                style={{width: 70, height: 70,borderRadius:50,}}
-                        />
-                    }
+                    <FriendPic url={MsgStoreState.userDetails.img} />
                 </View>
                 <View style={styles.friendName}><Text>Name</Text><Text>Last</Text></View>
             </View>
