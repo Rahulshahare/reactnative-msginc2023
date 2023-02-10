@@ -1,6 +1,6 @@
 import { Image, Platform, Pressable, StyleSheet, Text, TextInput, View ,StatusBar } from 'react-native'
 import React, { useState } from 'react'
-import { ActivityIndicator } from 'react-native-web';
+import { MsgStore } from '../store/Store';
 
 export default function LoginBox() {
 
@@ -18,6 +18,10 @@ export default function LoginBox() {
     const handleInputBlur =()=>{
         SetIsEmailFocus(false); 
         SetIsPasswordFocus(false);
+    }
+
+    const assignUserDetails = (data)=>{
+        MsgStore.update(s => {s.userDetails = data});
     }
 
     const handlePress = () => {
@@ -70,7 +74,14 @@ export default function LoginBox() {
                     //console.log(returnObject.identification);
 
                         if(returnObject.loggedIn == 'YES'){
-                            SetError(returnObject.userDetails.username)
+                            SetError(returnObject.userDetails.username);
+
+                            //Update Store login status
+                            MsgStore.update(s => {s.isLoggedIn = true});
+                            assignUserDetails(returnObject.userDetails);
+                            //MsgStore.update(s =>{s.userDetails = returnObject.userDetails})
+                            //const uD = MsgStore.useState(s => s.userDetails);
+                            console.log(returnObject.userDetails);
                         }else{
                             SetError(returnObject.error)
                         }
