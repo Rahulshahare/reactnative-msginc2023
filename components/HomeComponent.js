@@ -8,9 +8,8 @@ import FriendListComponent from './FriendListComponent';
 export default function HomeComponent() {
   
   const MsgStoreState = useStoreState(MsgStore);
-  function PrintDE(){
-    console.log(MsgStoreState.userDetails.username);
-  }
+
+  
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content" backgroundColor="#343a40" />

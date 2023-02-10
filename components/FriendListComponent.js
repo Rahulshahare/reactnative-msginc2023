@@ -9,10 +9,6 @@ export default function FriendListComponent() {
     const [imgSource, SetImgSource] = useState('');
 
     const loadImageFromUrl = (imageToGet) =>{
-        var data = new FormData();
-            data.append('identity', 'ReactNativeApp');
-            data.append('imageName', 'rutuj.jpg');
-
             var xhr = new XMLHttpRequest();
             xhr.open('GET', 'https://msginc.ml/imgtobase.php?imageName='+imageToGet, true);
             xhr.onload = function () {
@@ -20,7 +16,7 @@ export default function FriendListComponent() {
                  //console.log(this.responseText);
                  SetImgSource(this.responseText);
             };
-            xhr.send(data);
+            xhr.send();
     }
     function GetFrindList(){
         //console.log(MsgStoreState.userDetails.img);

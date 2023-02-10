@@ -12,8 +12,10 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   const [isLogin, SetIsLogin] = useState(false);
   const isLoggedIn = MsgStore.useState(s => s.isLoggedIn);
+
   const handleLogout = () =>{
     MsgStore.update(s => {s.isLoggedIn = false})
+    MsgStore.update(s => {s.userDetails = ''});
   }
     return (
       <NavigationContainer>
