@@ -2,6 +2,8 @@ import { Image, Platform, Pressable, StyleSheet, Text, TextInput, View ,StatusBa
 import React, { useState } from 'react'
 import { MsgStore } from '../store/Store';
 
+import { GetFriendList } from './Functions';
+
 export default function LoginBox() {
 
     const [isEmailFocus, SetIsEmailFocus] = useState(false);
@@ -37,9 +39,9 @@ export default function LoginBox() {
                 return false;
             }else{
                 /**Send login details to server */
-                setTimeout(function() {
+                //setTimeout(function() {
                     handleLogin();
-                   }, 2000);
+                   //}, 1000);
                    //SetDisabledPressable(false);
                 
             }
@@ -67,19 +69,20 @@ export default function LoginBox() {
             xhr.open('POST', 'https://msginc.ml/api/auth?utm_source=reactNativeApp', true);
             xhr.onload = function () {
                 // do something to response
-                // console.log(this.responseText);
+                 console.log(this.responseText);
                 if(this.responseText != ''){
-                    console.log(this.responseText);
+                    //console.log(this.responseText);
                     var returnObject = JSON.parse(this.responseText);
                     //console.log(returnObject.identification);
 
                         if(returnObject.loggedIn == 'YES'){
                             SetError(returnObject.userDetails.username);
-
+                            //Requesting for friend list
+                            GetFriendList(returnObject.userDetails.id);
                             //Update Store login status
                             MsgStore.update(s => {s.isLoggedIn = true});
                             assignUserDetails(returnObject.userDetails);
-                            console.log(returnObject.userDetails);
+                            //console.log(returnObject.userDetails);
                         }else{
                             SetError(returnObject.error)
                         }
@@ -112,7 +115,7 @@ export default function LoginBox() {
                 onFocus={handleEmailFocus}
                 onBlur={handleInputBlur}
                 placeholder='Email'
-                onChangeText={SetEmail}
+                onChangeText={newText => SetEmail(newText.trim())}
             />
             
             <TextInput 
@@ -120,7 +123,7 @@ export default function LoginBox() {
                 onFocus={handlePasswordFocus}
                 onBlur={handleInputBlur}
                 placeholder='Password' 
-                onChangeText={SetPassword}
+                onChangeText={newText => SetPassword(newText.trim())}
                 secureTextEntry={true}
             />
             <Pressable 
