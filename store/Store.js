@@ -4,6 +4,7 @@ export const MsgStore = new Store({
     isLoggedIn : false,
     userDetails: '',
     friendList: '',
+    userTwoId:'',
 });
 
 

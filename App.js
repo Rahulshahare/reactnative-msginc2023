@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { Button } from 'react-native';
+import { ActivityIndicator, Button, Image, Text, View } from 'react-native';
 import HomeComponent from './components/HomeComponent';
 import LoginComponent from './components/LoginComponent';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { MsgStore } from './store/Store';
+import MessageComponent from './components/MessageComponent';
 
 const Stack = createNativeStackNavigator();
 //isLogin  ? <HomeComponent/> : <LoginComponent/>
@@ -13,6 +14,14 @@ export default function App() {
   const [isLogin, SetIsLogin] = useState(false);
   const isLoggedIn = MsgStore.useState(s => s.isLoggedIn);
 
+  const LogoTitle = (props) => {
+  const idOfUserTwo = MsgStore.useState(s =>s.userTwoId);
+    return (
+      <View>
+        <Text style={{color:"#fff", fontWeight:'bold',fontSize:24}}>{idOfUserTwo}</Text>
+      </View>
+    );
+  };
   const handleLogout = () =>{
     MsgStore.update(s => {s.isLoggedIn = false})
     MsgStore.update(s => {s.userDetails = ''});
@@ -37,26 +46,47 @@ export default function App() {
               }}
             />
           ):(
-            <Stack.Screen 
-              name="MSGINC" 
-              component={HomeComponent}
-              options={{
-                headerStyle: {
-                  backgroundColor: '#343a40',
-                },
-                headerTintColor: '#fff',
-                headerTitleStyle: {
-                  fontWeight: 'bold',
-                },
-                headerRight: () => (
-                  <Button
-                    onPress={handleLogout}
-                    title="Logout"
-                    color="#000"
-                  />
-                ),
-              }}
-            />
+            <Stack.Group screenOptions={{
+              headerStyle: {
+                backgroundColor: '#343a40',
+              },
+              headerTintColor: '#fff',
+              headerTitleStyle: {
+                fontWeight: 'bold',
+              },
+            
+            }}>
+              <Stack.Screen 
+                name="MSGINC" 
+                component={HomeComponent}
+                options={{
+                  headerStyle: {
+                    backgroundColor: '#343a40',
+                    textTransform:'capitalize',
+                  },
+                  headerTintColor: '#fff',
+                  headerTitleStyle: {
+                    fontWeight: 'bold',
+                  },
+                  headerRight: () => (
+                    <Button
+                      onPress={handleLogout}
+                      title="Logout"
+                      color="#000"
+                    />
+                  ),
+                }}
+              />
+              <Stack.Screen 
+                name='Messages' 
+                options={({ route }) => ({ 
+                  //title: route.params.userName.toUpperCase(),
+                  headerTitle: props => <LogoTitle {...props} />
+                })}
+                component={MessageComponent}
+              />
+          </Stack.Group>
+            
           )
           }
           
