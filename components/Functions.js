@@ -1,8 +1,15 @@
 import { MsgStore } from "../store/Store";
 
 function UpdateFriendList(list){
+    //Adding new new_image field to hold base64 data of current images
+    list.forEach((item, index)=>{
+        //console.log(index, item)
+        list[index].new_image = '';
+    })
+    console.log(list);
     MsgStore.update(s =>{s.friendList = list})
 }
+
 export const GetFriendList = (myId) =>{
     const Buffer = require("buffer").Buffer;
     let encodedId = new Buffer(myId).toString("base64");
@@ -19,8 +26,9 @@ export const GetFriendList = (myId) =>{
                  var returnObject = JSON.parse(this.responseText);
                  if(returnObject.identification == 'ReactNativeApp' && returnObject.friendList != 'NODATA'){
                     //assign the list 
+                    //AddNewImageField(returnObject.friendList)
                     UpdateFriendList(returnObject.friendList);
-                    //console.log(returnObject.friendList);
+                    //console.log(returnObject.friendList[0]);
                  }
             };
             xhr.send(data);

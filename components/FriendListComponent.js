@@ -1,42 +1,45 @@
-import { ActivityIndicator, Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
+import React, {useState,  useEffect,  } from 'react'
 import { MsgStore } from '../store/Store';
 import { useStoreState } from 'pullstate';
 import FriendPic from './FriendPic';
+import { useNavigation } from '@react-navigation/native';
 
 export default function FriendListComponent() {
     const MsgStoreState = useStoreState(MsgStore);
     //const img = MsgStoreState.userDetails.img;
-    const [imgSource, SetImgSource] = useState('');
     const [friendData, SetFriendData] = useState('');
 
-    const loadImageFromUrl = (imageToGet) =>{
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', 'https://msginc.ml/imgtobase.php?imageName='+imageToGet, true);
-            xhr.onload = function () {
-                // do something to response
-                 //console.log(this.responseText);
-                 SetImgSource(this.responseText);
-            };
-            xhr.send();
+    useEffect(() => {
+      setData();
+        // SetFriendData(MsgStoreState.friendList);
+        
+    });
+
+    const setData = ()=>{
+      SetFriendData(MsgStoreState.friendList);
     }
-    
 
     const UserList = () => {
+      const navigation = useNavigation();
         return (
           <ScrollView>
-            {friendData.map(item => (
-            <Pressable android_ripple={{color:"#343a40"}}>
-              <View key={item.id} style={styles.friendList}>
-              <View style={styles.friendPic}>
-                  <FriendPic url={item.img} />
-              </View>
-              <View style={styles.friendName}>
-                <Text style={styles.friendNameTitle}>{item.username}</Text>
-                <Text style={styles.friendLastLogin}>{item.last_login_dt}</Text>
-            </View>
-          </View>
-          </Pressable>
+            {friendData.map((item, index) => (
+              <Pressable 
+                key={item.id}
+                android_ripple={{color:"#343a40"}}
+                onPress={() => navigation.navigate('Messages',{userName:item.username, userTwoId:item.id})}
+              >
+                <View  style={styles.friendList}>
+                  <View style={styles.friendPic}>
+                      <FriendPic url={item.img} id={item.id} index={index}/>
+                  </View>
+                  <View style={styles.friendName}>
+                    <Text style={styles.friendNameTitle}>{item.username}</Text>
+                    <Text style={styles.friendLastLogin}>{item.last_login_dt}</Text>
+                  </View>
+                </View>
+            </Pressable>
             ))}
           </ScrollView>
         );
@@ -45,16 +48,16 @@ export default function FriendListComponent() {
     
 
 
-    useEffect(() => {
-        SetFriendData(MsgStoreState.friendList);
-      });
+    
+
+    const renderList = friendData == '' ? <ActivityIndicator/>   : UserList();
 
   return (
     <View style={styles.friendListBox}>
         <Text style={styles.title}>FRIENDS</Text>
               
             <>
-            { friendData == '' ? <ActivityIndicator/>   : UserList()}   
+            {renderList}   
             </>  
     </View>
   )
