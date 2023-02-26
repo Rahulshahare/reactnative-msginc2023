@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { ActivityIndicator, Button, Image, Text, View } from 'react-native';
-import HomeComponent from './components/HomeComponent';
-import LoginComponent from './components/LoginComponent';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
 import { MsgStore } from './store/Store';
+
+import HomeComponent from './components/HomeComponent';
+import LoginComponent from './components/LoginComponent';
 import MessageComponent from './components/MessageComponent';
+import ChatTitleComponent from './components/ChatTitleComponent';
 
 const Stack = createNativeStackNavigator();
 //isLogin  ? <HomeComponent/> : <LoginComponent/>
@@ -14,14 +15,6 @@ export default function App() {
   const [isLogin, SetIsLogin] = useState(false);
   const isLoggedIn = MsgStore.useState(s => s.isLoggedIn);
 
-  const LogoTitle = (props) => {
-  const idOfUserTwo = MsgStore.useState(s =>s.userTwoId);
-    return (
-      <View>
-        <Text style={{color:"#fff", fontWeight:'bold',fontSize:24}}>{idOfUserTwo}</Text>
-      </View>
-    );
-  };
   const handleLogout = () =>{
     MsgStore.update(s => {s.isLoggedIn = false})
     MsgStore.update(s => {s.userDetails = ''});
@@ -81,7 +74,8 @@ export default function App() {
                 name='Messages' 
                 options={({ route }) => ({ 
                   //title: route.params.userName.toUpperCase(),
-                  headerTitle: props => <LogoTitle {...props} />
+                  //headerTitle: props => <LogoTitle {...props} />
+                  headerTitle: props => <ChatTitleComponent {...props} />
                 })}
                 component={MessageComponent}
               />
