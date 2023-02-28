@@ -88,7 +88,7 @@ export default function MessageComponent({ route, navigation }) {
 const styles = StyleSheet.create({
     container:{
         flex:1,
-        backgroundColor:"#09f",
+        // backgroundColor:"#09f",
         flexDirection:'column'
     },
     msgBox:{

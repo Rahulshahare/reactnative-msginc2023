@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, Image, StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { MsgStore } from '../store/Store'
 
@@ -27,10 +27,21 @@ const ChatTitleComponent = () => {
     
   return (
             <View style={styles.container}>
-                <Image
-                    source={{ uri: UserImge }}
-                    style={{ width: 50, height: 50,borderRadius:50, backgroundColor:"#fff", marginRight:10}}
-                />
+                { UserImge 
+                    ?   <Image
+                            source={{ uri: UserImge }}
+                            style={{ 
+                                width: 40, 
+                                height: 40,
+                                borderRadius:50,
+                                backgroundColor:"#fff",
+                                borderColor:"#343a406b",
+                                borderWidth:1, 
+                                marginRight:10
+                            }}
+                        />
+                    : <ActivityIndicator/>
+                }
                 <Text style={{color:"#fff", fontWeight:'bold',fontSize:24, textTransform:'capitalize'}}>{UserName}</Text>
             </View>
     )
@@ -43,5 +54,6 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         alignContent:'center',
         alignItems:'center',
+        marginLeft:0,
     },
 });

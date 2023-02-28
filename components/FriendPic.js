@@ -39,7 +39,7 @@ export default function FriendPic({url, index}) {
       ) : (
         <Image
           source={{ uri: imageData }}
-          style={{ width: 70, height: 70,borderRadius:50,}}
+          style={{ width: 60, height: 60,borderRadius:50,}}
         />
       )}
     </View>

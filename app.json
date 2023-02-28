@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "reactnative-msginc",
-    "slug": "reactnative-msginc",
+    "name": "msginc",
+    "slug": "msginc",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/newfevicon.png",
